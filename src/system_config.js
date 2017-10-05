@@ -21,12 +21,14 @@ System.config({
         
         'object-assign':'node_modules/object-assign',
         'react': 'node_modules/react',
+        'react-dom': 'node_modules/react-dom',
         'main':'src/main.js',
         // other libraries
         'rxjs': 'npm:rxjs',
         'rxjs/Observable': 'npm:rxjs/Observable',
         'rxjs/Rx': 'npm:rxjs/Rx',
         'd3': 'npm:d3/build/d3.js',
+        'prop-types': 'node_modules/prop-types'
         
     },
    // packages tells the System loader how to load when no filename and/or no extension
@@ -37,7 +39,8 @@ System.config({
         'fbjs': {defaultExtension: 'js'},
         'object-assign' : {main: 'index.js', defaultExtension: 'js' },
         'react': {main: 'index.js', defaultExtensions: 'js'},
-        'prop-types': {defaultExtension: 'js'}
+        'prop-types': {main: 'index.js', defaultExtension: 'js'},
+        'react-dom': {main: 'index.js',defaultExtensions: 'js'}
 
         // barrels
         // 'app/core':   { main: 'index'},
