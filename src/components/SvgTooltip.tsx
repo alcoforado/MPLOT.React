@@ -30,10 +30,17 @@ export enum TipDirection {
     se,
     sw
 }
+export interface IPropsSvgToolTip{
+    
+    svgNodeId: string;
+};
+interface State{};
 
-export class SvgTooltip extends React.Component {
+
+export class SvgToolTip extends React.Component<IPropsSvgToolTip,State> {
+
+   
     private direction_callbacks: { [dir:number]: () => TopLeftCorner };
-
     private _direction: TipDirection
     private _html: (d: any) => string
     private _offset: [Number, Number]
@@ -44,6 +51,9 @@ export class SvgTooltip extends React.Component {
     private _d3Node: d3.Selection<HTMLElement,{},null,undefined>; 
     private _point:SVGPoint;
    
+
+  
+
     private getScreenBBox() {
         var targetel =  d3.event.target as any
 
@@ -147,9 +157,48 @@ export class SvgTooltip extends React.Component {
             left: bbox.e.x
         }
     }
+    private setNode(n:HTMLElement)
+    {
+        this._node = n;
+        this._d3Node = d3.select(n);
+    }
 
+    
+    constructor(props:IPropsSvgToolTip) {
+        super(props);
+        this.direction_callbacks={};
+        this.direction_callbacks[TipDirection.n] = this.direction_n;
+        this.direction_callbacks[TipDirection.s] = this.direction_s;
+        this.direction_callbacks[TipDirection.e] = this.direction_e;
+        this.direction_callbacks[TipDirection.w] = this.direction_w;
+        this.direction_callbacks[TipDirection.ne] = this.direction_ne;
+        this.direction_callbacks[TipDirection.nw] = this.direction_nw;
+        this.direction_callbacks[TipDirection.se] = this.direction_se;
+        this.direction_callbacks[TipDirection.sw] = this.direction_sw;
+      
+        this._direction = TipDirection.n;
+        this._html = (d:any)=>{return ' '}
+        this._offset = [0,0];
+       
 
-    style(n: string, v: string): string|SvgTooltip {
+       
+        
+     
+        
+    }
+
+    componentDidMount()
+    {
+        var node = document.getElementById(this.props.svgNodeId)
+        if (node === null  || node.tagName.toLowerCase() !== 'svg')
+        {
+            throw "Error: SvgToolTip expects an svgRootNode";
+        }
+        this._svgCanvas = (node as any) as SVGSVGElement;
+        this._point = this._svgCanvas.createSVGPoint();
+    }
+
+    style(n: string, v: string): string|SvgToolTip {
         // debugger;
         if (arguments.length < 2 && typeof n === 'string') {
             return d3.select(this._node).style(n)
@@ -165,8 +214,9 @@ export class SvgTooltip extends React.Component {
 
         return this;
     }
-
-    attr(n:string, v:string=null):string|SvgTooltip {
+    attr(n:string):string;
+    attr(n:string,v:string):SvgToolTip
+    attr(n:string, v:string=null):string|SvgToolTip {
         if (v === null)
         {
             return d3.select(this._node).attr(n)
@@ -178,7 +228,9 @@ export class SvgTooltip extends React.Component {
         return this;
     }
 
-    offset(offset: [Number, Number] = null): [Number, Number] | SvgTooltip {
+    offset():[Number,Number];
+    offset(offset:[Number,Number]):SvgToolTip
+    offset(offset: [Number, Number] = null): [Number, Number] | SvgToolTip {
         if (offset === null) {
             return this._offset;
         }
@@ -189,7 +241,7 @@ export class SvgTooltip extends React.Component {
 
     }
 
-    direction(t: TipDirection): TipDirection | SvgTooltip {
+    direction(t: TipDirection): TipDirection | SvgToolTip {
         if (t === null)
             return this._direction;
         else {
@@ -198,7 +250,9 @@ export class SvgTooltip extends React.Component {
         }
     }
 
-    html(f: (d: any) => string): ((d: any) => string) | SvgTooltip {
+    html():((d: any) => string);
+    html(f: (d: any) => string):SvgToolTip;
+    html(f: (d: any) => string = null): ((d: any) => string) | SvgToolTip {
         if (f === null) {
             return this._html;
         }
@@ -209,39 +263,19 @@ export class SvgTooltip extends React.Component {
     }
 
 
-    construcor(svg:SVGElement) {
-
-
-        this.direction_callbacks[TipDirection.n] = this.direction_n;
-        this.direction_callbacks[TipDirection.s] = this.direction_s;
-        this.direction_callbacks[TipDirection.e] = this.direction_e;
-        this.direction_callbacks[TipDirection.w] = this.direction_w;
-        this.direction_callbacks[TipDirection.ne] = this.direction_ne;
-        this.direction_callbacks[TipDirection.nw] = this.direction_nw;
-        this.direction_callbacks[TipDirection.se] = this.direction_se;
-        this.direction_callbacks[TipDirection.sw] = this.direction_sw;
-
-
-        this._direction = TipDirection.n;
-        this._html = (d:any)=>{return ' '}
-        this._offset = [0,0];
-        this._svgCanvas = (svg.tagName.toLowerCase() === 'svg') ? svg as SVGSVGElement : svg.ownerSVGElement;
-        this._point = this._svgCanvas.createSVGPoint();
-        
-    }
-    show(d:any,i:Number) 
+   
+    show() 
     {
             var target = d3.event.target;
 
-            var content = this._html(d);
+            
             var poffset = this.offset(),
                 nodel = this._d3Node,
                 coords,
                 scrollTop = document.documentElement.scrollTop || document.body.scrollTop,
                 scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft
 
-            nodel.html(content)
-                .style('position', 'absolute')
+            nodel.style('position', 'absolute')
                 .style('opacity', 1)
                 .style('pointer-events', 'all')
 
@@ -270,26 +304,25 @@ export class SvgTooltip extends React.Component {
         //
         // Returns a tip
         hide() {
+            
             d3.select(this._node)
                 .style('opacity', 0)
                 .style('pointer-events', 'none')
             return this;
         }
 
-           
+        
+        
         render() {
-            var divStyle  = {
-                position:"absolute",
-                top:0,
-                opacity:0,
-                "pointer-events":"none",
-                "box-sizing":"border-box"
-            }
-            return <div style={divStyle}></div>
+            return (
+            <div ref={(node)=>this.setNode(node)} style={{top:0,opacity:0,position:"absolute","pointerEvents":"none","boxSizing":"border-box"}}>
+                {this.props.children}
+            </div>)
             //return (<div ></div>)
         }
 
        
+
 
 
       

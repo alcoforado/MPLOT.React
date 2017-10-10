@@ -22,7 +22,7 @@ System.register(["react", "./EventsOcurrenceChart.js"], function (exports_1, con
             }
         ],
         execute: function () {
-            App = (function (_super) {
+            App = /** @class */ (function (_super) {
                 __extends(App, _super);
                 function App() {
                     return _super !== null && _super.apply(this, arguments) || this;

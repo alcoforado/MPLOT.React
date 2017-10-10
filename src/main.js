@@ -16,7 +16,6 @@ System.register(["react-dom", "react", "./components/App.js"], function (exports
         ],
         execute: function () {
             react_dom_1.default.render(react_1.default.createElement(App_js_1.App, null), document.getElementById("main"));
-            console.log(App_js_1.App);
         }
     };
 });

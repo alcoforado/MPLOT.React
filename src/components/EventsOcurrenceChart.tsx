@@ -1,23 +1,70 @@
 import ReactDOM from 'react-dom';
 import React from 'react';
 import * as d3 from 'd3'
+import {SvgToolTip,IPropsSvgToolTip,TipDirection} from './SvgTooltip'
 
 
-export class EventsOcurrenceChart extends React.Component {
+
+export interface EventsOcurrenceChartProps {}
+export interface EventsOcurrenceChartState {errorsTip:Array<any>}
+
+
+export class EventsOcurrenceChart extends React.Component<EventsOcurrenceChartProps,EventsOcurrenceChartState> {
+    private svgNode:SVGSVGElement;
+    private svgId:string="svgId";
+    private tip:SvgToolTip=null;
     render() {
-       return ( 
+        
+        
+       return (
+          
             <div id="main">
-                <svg width={960} height={500}></svg>
+                <svg id={this.svgId} width={960} ref={(node)=>this.svgNode=node} height={500}></svg>
+                <SvgToolTip  ref={(tip:SvgToolTip)=>this.tip=tip} svgNodeId={this.svgId}>
+                {
+                   
+                  this.state.errorsTip.map((value)=>{
+                 
+                      return <div><strong>{value.Name}: </strong><span style={{color:'red'}}>{value.Value}</span></div>
+                  })
+                }
+                </SvgToolTip>
             </div>
         )
 
     }
 
+    constructor()
+    {
+        super()
+        this.state = {errorsTip:[]};
+    }
 
+    propertiesToArray(d:any):Array<any>
+    {
+        let a=[];
+        for (var col in d) {
+            if (d.hasOwnProperty(col)) {
+                var colShort=col.split("=")[0]
+                a.push({Name: colShort,Value: Number(d[col])})
+        // do stuff
+            }
+        }
+        return a;
 
+    }
 
+    mostOcurredErrors(d):Array<any>
+    {
+        
+        var a = this.propertiesToArray(d);
+        a=a.sort(function(a,b){return b.Value-a.Value});
+        return a.filter((elem:any)=>{
+            return elem.Name!=="Day"&&elem.Value!=0;
+        },a);
+    }
 
-
+    
 
     componentDidMount()
     {
@@ -36,20 +83,20 @@ export class EventsOcurrenceChart extends React.Component {
     
     var yAxis = d3.axisLeft(y);
     
-    // var tip = d3.tip()
-    //   .attr('class', 'd3-tip')
-    //   .offset([-10, 0])
-    //   .direction('e')
-    //   .html(MostOcurredErrors) 
+    this.tip
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .direction(TipDirection.e);
     
-    var svg = d3.select("body").append("svg")
+    
+    var svg = d3.select(this.svgNode)
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     
    // svg.call(tip);
-    
+   var that = this;
     d3.tsv("data2.tsv", filter, function(error, data) {
       x.domain(data.map(function(d) { return d.Day; }));
       y.domain([0, d3.max(data, function(d) { return d.total; })]);
@@ -59,6 +106,7 @@ export class EventsOcurrenceChart extends React.Component {
           .attr("transform", "translate(0," + height + ")")
           .call(xAxis);
     
+
       svg.append("g")
           .attr("class", "y axis")
           .call(yAxis)
@@ -68,7 +116,7 @@ export class EventsOcurrenceChart extends React.Component {
           .attr("dy", ".71em")
           .style("text-anchor", "end")
           .text("Error Count");
-    
+     
       svg.selectAll(".bar")
           .data(data)
         .enter().append("rect")
@@ -77,51 +125,12 @@ export class EventsOcurrenceChart extends React.Component {
           .attr("width", x.bandwidth())
           .attr("y", function(d) { return y(d.total); })
           .attr("height", function(d) { return height - y(d.total); })
-          .on('mouseover', null)
-          .on('mouseout', null)
+          .on('mouseover',(d:any)=>{that.setState({errorsTip:that.mostOcurredErrors(d)});that.tip.show();})
+          .on('mouseout', that.tip.hide)
     
     });
     
-    function propertiesToArray(d)
-    {
-        let a=[];
-        for (var col in d) {
-            if (d.hasOwnProperty(col)) {
-                a.push({Name: col,Value: Number(d[col])})
-        // do stuff
-            }
-        }
-        return a;
 
-    }
-
-    function MostOcurredErrors(d)
-    {
-        var a = propertiesToArray(d);
-        a=a.sort(function(a,b){return b.Value-a.Value});
-        var html = "";
-        
-        let limit = 1000;
-        for(var i=0;i<a.length;i++)
-        {
-            if (a[i].Value == 0) {
-                return html;
-            }
-            if (i >= limit)
-            {
-                return html;
-            }
-            if (a[i].Name == "Day")
-            {
-                continue;
-            }
-            else
-            {
-                html+="<div><strong>" + a[i].Name.split("=")[0]+":</strong> <span style='color:red'>" + a[i].Value+ "</span></div>"
-            }
-            
-        }
-    }
 
     function filter(d) {
         let total=0;
@@ -134,6 +143,8 @@ export class EventsOcurrenceChart extends React.Component {
         d.total=total;
         return d;
     }
+
+  
 
 
 

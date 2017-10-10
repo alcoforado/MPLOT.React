@@ -25,9 +25,8 @@ System.config({
         'rxjs': 'npm:rxjs',
         'rxjs/Observable': 'npm:rxjs/Observable',
         'rxjs/Rx': 'npm:rxjs/Rx',
-        'd3': 'npm:d3/build/d3.min.js',
-        'prop-types': '/node_modules/prop-types'
-        
+        'prop-types': '/node_modules/prop-types',
+        'd3': 'npm:d3/build/d3.min.js'
     },
    // packages tells the System loader how to load when no filename and/or no extension
     packages: {
@@ -35,7 +34,7 @@ System.config({
         'object-assign' : {main: 'index.js', defaultExtension: 'js' },
         'react': {main: 'index.js', defaultExtensions: 'js'},
         'prop-types': {main: 'index.js', defaultExtension: 'js'},
-        'react-dom': {main: 'index.js',defaultExtensions: 'js'}
+        'react-dom': {main: 'index.js',defaultExtensions: 'js'},
         
         // ,'d3' : {main: 'index.js', defaultExtension: 'js' }
         // barrels

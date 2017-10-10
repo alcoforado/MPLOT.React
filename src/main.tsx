@@ -7,7 +7,7 @@ ReactDOM.render(
     document.getElementById("main")
   );
 
-console.log(App);
+
 
 
 

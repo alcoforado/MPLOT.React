@@ -11,7 +11,7 @@ System.register(["react", "d3"], function (exports_1, context_1) {
         };
     })();
     var __moduleName = context_1 && context_1.id;
-    var react_1, d3, TipBBox, TipDirection, SvgTooltip;
+    var react_1, d3, TipBBox, TipDirection, SvgToolTip;
     return {
         setters: [
             function (react_1_1) {
@@ -22,7 +22,7 @@ System.register(["react", "d3"], function (exports_1, context_1) {
             }
         ],
         execute: function () {
-            TipBBox = (function () {
+            TipBBox = /** @class */ (function () {
                 function TipBBox() {
                 }
                 return TipBBox;
@@ -38,14 +38,28 @@ System.register(["react", "d3"], function (exports_1, context_1) {
                 TipDirection[TipDirection["sw"] = 7] = "sw";
             })(TipDirection || (TipDirection = {}));
             exports_1("TipDirection", TipDirection);
-            SvgTooltip = (function (_super) {
-                __extends(SvgTooltip, _super);
-                function SvgTooltip() {
-                    var _this = _super !== null && _super.apply(this, arguments) || this;
+            ;
+            ;
+            SvgToolTip = /** @class */ (function (_super) {
+                __extends(SvgToolTip, _super);
+                function SvgToolTip(props) {
+                    var _this = _super.call(this, props) || this;
                     _this.DIRECTION_SIZE = 8;
+                    _this.direction_callbacks = {};
+                    _this.direction_callbacks[TipDirection.n] = _this.direction_n;
+                    _this.direction_callbacks[TipDirection.s] = _this.direction_s;
+                    _this.direction_callbacks[TipDirection.e] = _this.direction_e;
+                    _this.direction_callbacks[TipDirection.w] = _this.direction_w;
+                    _this.direction_callbacks[TipDirection.ne] = _this.direction_ne;
+                    _this.direction_callbacks[TipDirection.nw] = _this.direction_nw;
+                    _this.direction_callbacks[TipDirection.se] = _this.direction_se;
+                    _this.direction_callbacks[TipDirection.sw] = _this.direction_sw;
+                    _this._direction = TipDirection.n;
+                    _this._html = function (d) { return ' '; };
+                    _this._offset = [0, 0];
                     return _this;
                 }
-                SvgTooltip.prototype.getScreenBBox = function () {
+                SvgToolTip.prototype.getScreenBBox = function () {
                     var targetel = d3.event.target;
                     while ('undefined' === typeof targetel.getScreenCTM && 'undefined' !== typeof targetel.parentNode) {
                         targetel = targetel.parentNode;
@@ -74,63 +88,75 @@ System.register(["react", "d3"], function (exports_1, context_1) {
                     bbox.s = point.matrixTransform(matrix);
                     return bbox;
                 };
-                SvgTooltip.prototype.direction_n = function () {
+                SvgToolTip.prototype.direction_n = function () {
                     var bbox = this.getScreenBBox();
                     return {
                         top: bbox.n.y - this._node.offsetHeight,
                         left: bbox.n.x - this._node.offsetWidth / 2
                     };
                 };
-                SvgTooltip.prototype.direction_s = function () {
+                SvgToolTip.prototype.direction_s = function () {
                     var bbox = this.getScreenBBox();
                     return {
                         top: bbox.s.y,
                         left: bbox.s.x - this._node.offsetWidth / 2
                     };
                 };
-                SvgTooltip.prototype.direction_e = function () {
+                SvgToolTip.prototype.direction_e = function () {
                     var bbox = this.getScreenBBox();
                     return {
                         top: bbox.e.y - this._node.offsetHeight / 2,
                         left: bbox.e.x
                     };
                 };
-                SvgTooltip.prototype.direction_w = function () {
+                SvgToolTip.prototype.direction_w = function () {
                     var bbox = this.getScreenBBox();
                     return {
                         top: bbox.w.y - this._node.offsetHeight / 2,
                         left: bbox.w.x - this._node.offsetWidth
                     };
                 };
-                SvgTooltip.prototype.direction_nw = function () {
+                SvgToolTip.prototype.direction_nw = function () {
                     var bbox = this.getScreenBBox();
                     return {
                         top: bbox.nw.y - this._node.offsetHeight,
                         left: bbox.nw.x - this._node.offsetWidth
                     };
                 };
-                SvgTooltip.prototype.direction_ne = function () {
+                SvgToolTip.prototype.direction_ne = function () {
                     var bbox = this.getScreenBBox();
                     return {
                         top: bbox.ne.y - this._node.offsetHeight,
                         left: bbox.ne.x
                     };
                 };
-                SvgTooltip.prototype.direction_sw = function () {
+                SvgToolTip.prototype.direction_sw = function () {
                     var bbox = this.getScreenBBox();
                     return {
                         top: bbox.sw.y,
                         left: bbox.sw.x - this._node.offsetWidth
                     };
                 };
-                SvgTooltip.prototype.direction_se = function () {
+                SvgToolTip.prototype.direction_se = function () {
                     var bbox = this.getScreenBBox();
                     return {
                         top: bbox.se.y,
                         left: bbox.e.x
                     };
                 };
-                SvgTooltip.prototype.style = function (n, v) {
+                SvgToolTip.prototype.setNode = function (n) {
+                    this._node = n;
+                    this._d3Node = d3.select(n);
+                };
+                SvgToolTip.prototype.componentDidMount = function () {
+                    var node = document.getElementById(this.props.svgNodeId);
+                    if (node === null || node.tagName.toLowerCase() !== 'svg') {
+                        throw "Error: SvgToolTip expects an svgRootNode";
+                    }
+                    this._svgCanvas = node;
+                    this._point = this._svgCanvas.createSVGPoint();
+                };
+                SvgToolTip.prototype.style = function (n, v) {
                     // debugger;
                     if (arguments.length < 2 && typeof n === 'string') {
                         return d3.select(this._node).style(n);
@@ -146,7 +172,7 @@ System.register(["react", "d3"], function (exports_1, context_1) {
                     }
                     return this;
                 };
-                SvgTooltip.prototype.attr = function (n, v) {
+                SvgToolTip.prototype.attr = function (n, v) {
                     if (v === void 0) { v = null; }
                     if (v === null) {
                         return d3.select(this._node).attr(n);
@@ -156,7 +182,7 @@ System.register(["react", "d3"], function (exports_1, context_1) {
                     }
                     return this;
                 };
-                SvgTooltip.prototype.offset = function (offset) {
+                SvgToolTip.prototype.offset = function (offset) {
                     if (offset === void 0) { offset = null; }
                     if (offset === null) {
                         return this._offset;
@@ -166,7 +192,7 @@ System.register(["react", "d3"], function (exports_1, context_1) {
                         return this;
                     }
                 };
-                SvgTooltip.prototype.direction = function (t) {
+                SvgToolTip.prototype.direction = function (t) {
                     if (t === null)
                         return this._direction;
                     else {
@@ -174,7 +200,8 @@ System.register(["react", "d3"], function (exports_1, context_1) {
                         return this;
                     }
                 };
-                SvgTooltip.prototype.html = function (f) {
+                SvgToolTip.prototype.html = function (f) {
+                    if (f === void 0) { f = null; }
                     if (f === null) {
                         return this._html;
                     }
@@ -183,27 +210,10 @@ System.register(["react", "d3"], function (exports_1, context_1) {
                         return this;
                     }
                 };
-                SvgTooltip.prototype.construcor = function (svg) {
-                    this.direction_callbacks[TipDirection.n] = this.direction_n;
-                    this.direction_callbacks[TipDirection.s] = this.direction_s;
-                    this.direction_callbacks[TipDirection.e] = this.direction_e;
-                    this.direction_callbacks[TipDirection.w] = this.direction_w;
-                    this.direction_callbacks[TipDirection.ne] = this.direction_ne;
-                    this.direction_callbacks[TipDirection.nw] = this.direction_nw;
-                    this.direction_callbacks[TipDirection.se] = this.direction_se;
-                    this.direction_callbacks[TipDirection.sw] = this.direction_sw;
-                    this._direction = TipDirection.n;
-                    this._html = function (d) { return ' '; };
-                    this._offset = [0, 0];
-                    this._svgCanvas = (svg.tagName.toLowerCase() === 'svg') ? svg : svg.ownerSVGElement;
-                    this._point = this._svgCanvas.createSVGPoint();
-                };
-                SvgTooltip.prototype.show = function (d, i) {
+                SvgToolTip.prototype.show = function () {
                     var target = d3.event.target;
-                    var content = this._html(d);
                     var poffset = this.offset(), nodel = this._d3Node, coords, scrollTop = document.documentElement.scrollTop || document.body.scrollTop, scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
-                    nodel.html(content)
-                        .style('position', 'absolute')
+                    nodel.style('position', 'absolute')
                         .style('opacity', 1)
                         .style('pointer-events', 'all');
                     coords = this.direction_callbacks[this._direction].apply(this);
@@ -224,26 +234,20 @@ System.register(["react", "d3"], function (exports_1, context_1) {
                 // Public - hide the tooltip
                 //
                 // Returns a tip
-                SvgTooltip.prototype.hide = function () {
+                SvgToolTip.prototype.hide = function () {
                     d3.select(this._node)
                         .style('opacity', 0)
                         .style('pointer-events', 'none');
                     return this;
                 };
-                SvgTooltip.prototype.render = function () {
-                    var divStyle = {
-                        position: "absolute",
-                        top: 0,
-                        opacity: 0,
-                        "pointer-events": "none",
-                        "box-sizing": "border-box"
-                    };
-                    return react_1.default.createElement("div", { style: divStyle });
+                SvgToolTip.prototype.render = function () {
+                    var _this = this;
+                    return (react_1.default.createElement("div", { ref: function (node) { return _this.setNode(node); }, style: { top: 0, opacity: 0, position: "absolute", "pointerEvents": "none", "boxSizing": "border-box" } }, this.props.children));
                     //return (<div ></div>)
                 };
-                return SvgTooltip;
+                return SvgToolTip;
             }(react_1.default.Component));
-            exports_1("SvgTooltip", SvgTooltip);
+            exports_1("SvgToolTip", SvgToolTip);
         }
     };
 });
