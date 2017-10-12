@@ -1,5 +1,5 @@
-import ReactDOM from 'react-dom';
-import React from 'react';
+import * as ReactDOM from 'react-dom';
+import * as React from 'react';
 import * as d3 from 'd3'
 import {SvgToolTip,IPropsSvgToolTip,TipDirection} from './SvgTooltip'
 import {ColorGenerator} from '../extensions/ColorGenerator'

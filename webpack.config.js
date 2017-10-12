@@ -3,8 +3,8 @@ const webpack = require('webpack'); //to access built-in plugins
 var CompressionPlugin = require("compression-webpack-plugin");
 module.exports = {
   entry: {
-    app: './src/main.js',
-    polyfills: './src/polyfills.js'
+    app: './src/main.js'
+   
   },
   output: {
     filename: '[name].bundle.js',
@@ -18,7 +18,7 @@ module.exports = {
           },
           {
             test: /\.ts$/,
-            loaders:['awesome-typescript-loader','angular2-template-loader']  
+            loaders:['awesome-typescript-loader']  
           }
       ]
   },
@@ -29,12 +29,6 @@ module.exports = {
     }
   },
   plugins: [
-      new webpack.ContextReplacementPlugin(
-        // The (\\|\/) piece accounts for path separators in *nix and Windows
-        /angular(\\|\/)core(\\|\/)@angular/,
-        path.resolve(__dirname, './doesnotexist'),
-        { }
-    )
   //   , new webpack.optimize.UglifyJsPlugin()
   //  ,new CompressionPlugin({
   //     asset: "bundle.js.gz",

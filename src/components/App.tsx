@@ -1,5 +1,5 @@
-import ReactDOM from 'react-dom';
-import React from 'react';
+import * as ReactDOM from 'react-dom';
+import * as  React from 'react';
 import {EventsOcurrenceChart} from './EventsOcurrenceChart'
 import {PieChart3D} from './PieChart3D'
 

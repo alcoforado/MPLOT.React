@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "watch-css": "less-watch-compiler ./src/less ./src/css/ styles.less --source-map",
-    "tsc": "tsc --version && tsc --project ./tsconfig.json && concurrently \"tsc  --project ./tsconfig.json -w\" \"npm run watch-css\"",
+    "tsc": "tsc --pretty --version && tsc --project ./tsconfig.json && concurrently \"tsc  --project ./tsconfig.json -w\" \"npm run watch-css\"",
     "lite": "lite-server",
     "start": "webpack-dev-server --port=4200",
     "build": "webpack",
