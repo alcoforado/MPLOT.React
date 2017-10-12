@@ -2,6 +2,12 @@
 
 body {
   font: 10px sans-serif;
+  height:100%;
+}
+.tooltip-title {
+  padding:4px 0 10px 0px;
+  width:100%;
+  text-align:center;
 }
 
 .axis path,
@@ -31,6 +37,59 @@ body {
   color: #fff;
   border-radius: 2px;
 }
+.div-bullet {
+  display:inline-block;
+  height:8px;
+  width: 8px;
+  border-radius:4px;
+  background-color: greenyellow;
+  vertical-align: middle;
+}
+.vertical-space-small
+{
+  margin-bottom: 4px;
+}
+
+.panel-side-by-side
+{
+ 
+  // border-right:  4px solid slategray; 
+  padding-right:6px;
+  
+}
+
+td {
+  padding:10px 10px 20px 20px;
+  border: 1px solid gray;
+  text-align: center;
+}
+
+.container-panel-side-by-side {
+  display:flex;
+  flex-direction: row;
+  flex-wrap:nowrap;
+  align-items: stretch;
+}
+
+.vertical-blur-separator
+{
+  height:auto;
+  width:2px;
+  box-shadow: 10px 0px 1px 1px  DARKGREY;
+  //box-sizing:border-box;
+  padding: 0px 0px 0px 0px;
+  margin-right:20px;
+  margin-left:5px;
+  //flex: 1 1 auto;
+}
+
+.panel-side-by-side:last-child
+{
+ // background-color:white;
+  border-right:  none; 
+}
+
+
 
 /* Creates a small triangle extender for the tooltip */
 // .d3-tip:after {

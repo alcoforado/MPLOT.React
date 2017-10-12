@@ -1,4 +1,4 @@
-System.register(["react", "./EventsOcurrenceChart.js"], function (exports_1, context_1) {
+System.register(["react", "./EventsOcurrenceChart"], function (exports_1, context_1) {
     "use strict";
     var __extends = (this && this.__extends) || (function () {
         var extendStatics = Object.setPrototypeOf ||
@@ -11,14 +11,14 @@ System.register(["react", "./EventsOcurrenceChart.js"], function (exports_1, con
         };
     })();
     var __moduleName = context_1 && context_1.id;
-    var react_1, EventsOcurrenceChart_js_1, App;
+    var react_1, EventsOcurrenceChart_1, App;
     return {
         setters: [
             function (react_1_1) {
                 react_1 = react_1_1;
             },
-            function (EventsOcurrenceChart_js_1_1) {
-                EventsOcurrenceChart_js_1 = EventsOcurrenceChart_js_1_1;
+            function (EventsOcurrenceChart_1_1) {
+                EventsOcurrenceChart_1 = EventsOcurrenceChart_1_1;
             }
         ],
         execute: function () {
@@ -28,9 +28,14 @@ System.register(["react", "./EventsOcurrenceChart.js"], function (exports_1, con
                     return _super !== null && _super.apply(this, arguments) || this;
                 }
                 App.prototype.render = function () {
+                    var data = {
+                        A1: "40",
+                        A2: "30",
+                        A3: "100"
+                    };
                     return (react_1.default.createElement("div", null,
-                        "Hello World 2",
-                        react_1.default.createElement(EventsOcurrenceChart_js_1.EventsOcurrenceChart, null)));
+                        react_1.default.createElement("h1", null, "Ocurrences of errors for Web Portal since 01/01/2017"),
+                        react_1.default.createElement(EventsOcurrenceChart_1.EventsOcurrenceChart, null)));
                 };
                 return App;
             }(react_1.default.Component));

@@ -189,6 +189,7 @@ export class SvgToolTip extends React.Component<IPropsSvgToolTip,State> {
 
     componentDidMount()
     {
+      
         var node = document.getElementById(this.props.svgNodeId)
         if (node === null  || node.tagName.toLowerCase() !== 'svg')
         {
@@ -304,7 +305,7 @@ export class SvgToolTip extends React.Component<IPropsSvgToolTip,State> {
         //
         // Returns a tip
         hide() {
-            
+          
             d3.select(this._node)
                 .style('opacity', 0)
                 .style('pointer-events', 'none')
