@@ -44176,7 +44176,7 @@ var EventsOcurrenceChart = /** @class */ (function (_super) {
         d3.tsv("data2017.tsv", filter, function (error, data) {
             x.domain(data.map(function (d) { return d.Day; }));
             y.domain([0, d3.max(data, function (d) { return d.total; })]);
-            xAxis.tickValues(x.domain().filter(function (d, i) { return !(i % 30); })).tickFormat(function (d) { return new Date(that.since.getTime() + Number(d)).toDateString(); });
+            xAxis.tickValues(x.domain().filter(function (d, i) { return !(i % 30); })).tickFormat(function (d) { return new Date(that.since.getTime() + Number(d) * 86400000).toDateString(); });
             that.setState({
                 errDict: that.getErrorDictionary(data[0]),
                 errorsTip: [],

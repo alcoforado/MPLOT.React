@@ -181,7 +181,7 @@ export class EventsOcurrenceChart extends React.Component<EventsOcurrenceChartPr
       x.domain(data.map(function(d) { return d.Day; }));
       y.domain([0, d3.max(data, function(d) { return d.total; })]);
 
-      xAxis.tickValues(x.domain().filter((d,i) => !(i%30))).tickFormat((d)=>new Date(that.since.getTime()+ Number(d)).toDateString());
+      xAxis.tickValues(x.domain().filter((d,i) => !(i%30))).tickFormat((d)=>new Date(that.since.getTime()+ Number(d)*86400000).toDateString());
       that.setState({
           errDict:that.getErrorDictionary(data[0]),
           errorsTip:[],
